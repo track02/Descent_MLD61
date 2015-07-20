@@ -9,7 +9,7 @@ function player.new(world)
 	local body = love.physics.newBody(world, 300, 100, "kinematic")
 	local shape = love.physics.newCircleShape(3)
 	local fixture = love.physics.newFixture(body, shape)
-	fixture:setUserData("Player") --Used to identify player in collisions
+	fixture:setUserData("P") --Used to identify player in collisions
 
 
 	local join

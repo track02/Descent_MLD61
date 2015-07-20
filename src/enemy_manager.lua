@@ -8,8 +8,6 @@ function enemies.new(_world)
 	local maxEnemies = 1
 	local target = {x = 0 , y = 0}
 
-
-
 	function self.addEnemy(px, py)
 
 		target.x = px
@@ -25,7 +23,7 @@ function enemies.new(_world)
 			enemy.body = love.physics.newBody(world, x1, y1, "dynamic")
 			enemy.shape = love.physics.newCircleShape(10)
 			enemy.fixture = love.physics.newFixture(enemy.body, enemy.shape)
-			enemy.fixture:setUserData("Enemy" .. x1)
+			enemy.fixture:setUserData("E"..x1 + y1) --Used to identify this enemy in collisions
 			enemy.body:setLinearDamping(0.1)
 
 			table.insert(enemyList, enemy)
@@ -69,13 +67,29 @@ function enemies.new(_world)
 			enemyList[i].body:applyForce(xratio * -400, yratio * -400)
 
 
-
-
-
-
 		end
 
 	end
+
+
+	function self.removeEnemy(id)
+
+		enemyIndex = 0
+
+		for i = 1, #enemyList, 1 do
+
+			if (id == enemyList[i].fixture:getUserData()) then
+				enemyIndex = i
+			end
+
+		end	
+
+		enemyList[i].body:destroy()
+		enemyList[i].shape:destroy()
+		enemyList[i].fixutre:destroy()
+		table.remove(enemyList. i)
+
+	end	
 
 	return self
 

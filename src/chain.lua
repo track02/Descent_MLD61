@@ -36,9 +36,9 @@ function chain.new(world)
 			link.fixture = love.physics.newFixture(link.body, link.shape) --Fix bodies to shapes
 
 			if(i == segments) then
-				link.fixture:setUserData("Endlink")
+				link.fixture:setUserData("F") --Final link
 			else
-				link.fixture:setUserData("Link")
+				link.fixture:setUserData("L") --Link
 			end
 
 			table.insert(links,link) 

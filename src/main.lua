@@ -86,6 +86,14 @@ function beginContact(a, b, coll)
 	textA = a:getUserData() 
 	textB = b:getUserData()
 
+	-- _E_nemy colliding with _F_inal link chain
+	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "F") then
+		textA = "DESTROYING A"
+		enemies.removeEnemy(a:getUserData())
+	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "F") then
+		textB = "DESTROYING B"
+		enemies.removeEnemy(b:getUserData())
+	end
  
 end
  
