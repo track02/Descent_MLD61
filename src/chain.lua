@@ -104,6 +104,7 @@ function chain.new(world)
 		newlink.body:setLinearDamping(0.1)
 		newlink.shape = love.physics.newCircleShape(link_radius) -- Create a rectangle 600x50
 		newlink.fixture = love.physics.newFixture(newlink.body, newlink.shape) --Fix rectangle to body
+		newlink.fixture:setUserData("L") --Link
 
 		links[1].body:setPosition(x,y+link_distance)
 

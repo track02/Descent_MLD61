@@ -76,23 +76,20 @@ function love.draw()
 
 end
 
-
 --a is first fixture object
 --b is second fixture object
 --coll is contact object
 function beginContact(a, b, coll)
 
 	x,y = coll:getNormal()
-	textA = a:getUserData() 
-	textB = b:getUserData()
+	textA = a:getBody():getLinearVelocity()
+	textB = b:getBody():getLinearVelocity()
 
 	-- _E_nemy colliding with _F_inal link chain
-	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "F") then
-		textA = "DESTROYING A"
-		enemies.removeEnemy(a:getUserData())
-	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "F") then
-		textB = "DESTROYING B"
-		enemies.removeEnemy(b:getUserData())
+	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "F" and math.abs(b:getBody():getLinearVelocity()) > 400) then
+		enemies.enemyHit(a:getUserData())
+	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "F" and math.abs(a:getBody():getLinearVelocity()) > 400) then
+		enemies.enemyHit(b:getUserData())
 	end
  
 end
