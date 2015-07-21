@@ -5,12 +5,13 @@ local vo = require('vector_ops')
 function player.new(world)
 
 	local self = {}
-
-	local body = love.physics.newBody(world, 300, 100, "kinematic")
+	local body = love.physics.newBody(world, 300, 100, "dynamic")
 	local shape = love.physics.newCircleShape(3)
 	local fixture = love.physics.newFixture(body, shape)
+	local mass = 500
 	fixture:setUserData("P") --Used to identify player in collisions
-
+	body:setGravityScale(0)
+	body:setMass(mass)
 
 	local join
 	local reinforce

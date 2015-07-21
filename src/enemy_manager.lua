@@ -17,8 +17,8 @@ function enemies.new(_world)
 
 		if(#enemyList < maxEnemies and math.random() > 0.75) then
 	
-			x1 = math.random(50, 550)
-			y1 = math.random(50, 550)
+			x1 = math.random(100, 900)
+			y1 = math.random(850, 900) --Spawn from bottom, offscreen
 
 			enemy = {}
 			enemy.body = love.physics.newBody(world, x1, y1, "dynamic")
@@ -27,6 +27,7 @@ function enemies.new(_world)
 			enemy.fixture:setUserData("E"..x1 + y1) --Used to identify this enemy in collisions
 			enemy.body:setLinearDamping(0.1)
 			enemy.health = 3
+			enemy.force = -1 * (math.random(400,650))
 
 			table.insert(enemyList, enemy)
 
@@ -65,7 +66,7 @@ function enemies.new(_world)
 			xratio = (xlength / r)
 			yratio = (ylength / r)
 
-			enemyList[i].body:applyForce(xratio * -400, yratio * -400)
+			enemyList[i].body:applyForce(xratio * enemyList[i].force, yratio * enemyList[i].force)
 
 		end
 

@@ -1,6 +1,7 @@
 local _chain = require('chain')
 local _player = require('player')
 local _enemyList = require('enemy_manager')
+local _walls = require('walls')
 
 function love.conf(t)
 
@@ -22,6 +23,8 @@ function love.load()
 	player = _player.new(world)
 
 	enemies = _enemyList.new(world)
+
+	walls = _walls.new(world)
 
 	love.graphics.setBackgroundColor(104,136,248)
 
@@ -68,11 +71,13 @@ end
 function love.draw()
 
 	love.graphics.setColor(220, 220, 220) -- set the drawing color to green for the ground
+	walls.drawWalls()
 	player.drawPlayer()
 	enemies.drawEnemies()
+
 	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
-	love.graphics.print(textA, 10,20)
-	love.graphics.print(textB, 10,30)
+	love.graphics.print(textA, 75,20)
+	love.graphics.print(textB, 75,30)
 
 end
 
@@ -92,6 +97,15 @@ function beginContact(a, b, coll)
 		enemies.enemyHit(b:getUserData())
 	end
  
+	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "W" and math.abs(a:getBody():getLinearVelocity()) > 400) then
+		enemies.enemyHit(a:getUserData())
+		textA = " WALL HIT "
+	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "W" and math.abs(b:getBody():getLinearVelocity()) > 400) then
+		enemies.enemyHit(b:getUserData())
+		textB = " WALL HIT "
+	end
+
+
 end
  
 function endContact(a, b, coll)
