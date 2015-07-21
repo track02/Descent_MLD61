@@ -92,11 +92,12 @@ function beginContact(a, b, coll)
 
 	-- _E_nemy colliding with _F_inal link chain
 	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "F" and math.abs(b:getBody():getLinearVelocity()) > 400) then
-		enemies.enemyHit(a:getUserData())
+		enemies.enemyHit(a:getUserData(),false)
 	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "F" and math.abs(a:getBody():getLinearVelocity()) > 400) then
-		enemies.enemyHit(b:getUserData())
+		enemies.enemyHit(b:getUserData(), false)
 	end
  
+ 	--_E_nemy colliding with _W_all
 	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "W" and math.abs(a:getBody():getLinearVelocity()) > 400) then
 		enemies.enemyHit(a:getUserData())
 		textA = " WALL HIT "
@@ -105,6 +106,15 @@ function beginContact(a, b, coll)
 		textB = " WALL HIT "
 	end
 
+	-- _E_nemy colliding with _P_layer
+	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "P") then
+		player.playerHit()
+		enemies.enemyHit(a:getUserData(), true)
+	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "P") then
+		enemies.enemyHit(b:getUserData(), true)
+		player.playerHit()
+	end
+ 
 
 end
  

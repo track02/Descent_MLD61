@@ -10,6 +10,24 @@ function chain.new(world)
 	local link_radius = 3
 	local link_distance = 10
 	local endlink_radius = 15
+	
+	local link_sprites = { 
+						   love.graphics.newImage("Sprites/Link_Low.png"),
+						   love.graphics.newImage("Sprites/Link_Med.png"),
+						   love.graphics.newImage("Sprites/Link_High.png"),
+						   love.graphics.newImage("Sprites/Link_Full.png")
+						 }
+
+	local link_end_sprites = {
+								love.graphics.newImage("Sprites/Link_End_Low.png"),
+								love.graphics.newImage("Sprites/Link_End_Med.png"),	
+								love.graphics.newImage("Sprites/Link_End_High.png"),
+								love.graphics.newImage("Sprites/Link_End_Full.png")
+							}
+
+	local link_sprite_index = 4
+
+
 
 	local target = {x = 0, y = 0}
 	local velocity = {x = 0, y = 0}
@@ -27,10 +45,10 @@ function chain.new(world)
 			
 			if (i == segments) then
 				link.shape = love.physics.newCircleShape(endlink_radius) --Ending link
-				link.body:setLinearDamping(0.5)
+				link.body:setLinearDamping(0.25)
 			else
 				link.shape = love.physics.newCircleShape(link_radius) 
-				link.body:setLinearDamping(0.5)
+				link.body:setLinearDamping(0.25)
 			end
 
 			link.fixture = love.physics.newFixture(link.body, link.shape) --Fix bodies to shapes
@@ -72,24 +90,15 @@ function chain.new(world)
 
 		for i = 1, #links, 1 do
 
+			x,y = links[i].body:getPosition()
+
 			if(i == #links) then
 				drawtype = "fill"
+				love.graphics.draw(link_end_sprites[link_sprite_index],  x - endlink_radius,y - endlink_radius)
+			else
+				love.graphics.draw(link_sprites[link_sprite_index], x - link_radius,y - link_radius)
 			end
-
-			x,y = links[i].body:getPosition()
-			love.graphics.setColor(220, 220, 220) -- set the drawing color to green for the ground
-			love.graphics.circle(drawtype, x,y, links[i].shape:getRadius(), 10)
-
 		end		
-
-		for i = 1, #links -1, 1 do
-
-			love.graphics.setColor(0, 0, 0) -- set the drawing color to green for the ground
-			ax1, ay1, ax2, ay2 = links[i].join:getAnchors()
-			love.graphics.circle("fill", ax1, ay1, 1, 10)
-			love.graphics.circle("fill",ax2,ay2, 1, 10)
-
-		end
 
 		love.graphics.print(#links, 100, 100)
 
@@ -101,7 +110,7 @@ function chain.new(world)
 		x,y = links[1].body:getPosition();
 
 		newlink.body = love.physics.newBody(world, x, y, "dynamic") --Create a physics body
-		newlink.body:setLinearDamping(0.1)
+		newlink.body:setLinearDamping(0.25)
 		newlink.shape = love.physics.newCircleShape(link_radius) -- Create a rectangle 600x50
 		newlink.fixture = love.physics.newFixture(newlink.body, newlink.shape) --Fix rectangle to body
 		newlink.fixture:setUserData("L") --Link
@@ -136,6 +145,18 @@ function chain.new(world)
 
 	function self.getLinks()
 		return links
+	end
+
+
+
+	function self.setLinkSprite(index)
+		
+		link_sprite_index = index
+
+		if(link_sprite_index < 1) then
+			link_sprite_index = 1
+		end
+		
 	end
 
 	
