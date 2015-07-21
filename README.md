@@ -1,4 +1,4 @@
-# Box2D - Flail
+# Mini LD 61
 
 Originally started for a Mini Ludum Dare 60, will submit for MLD61 instead.
 
