@@ -1,23 +1,12 @@
 # Box2D - Flail
 
-Originally started for a Mini Ludum Dare, now a toy example of LOVE / Box2D
+Originally started for a Mini Ludum Dare 60, will submit for MLD61 instead.
 
-- Use the mouse to spin the chain and hit enemies away 
+- Move the player using the mouse
+- Move in circles to spin the chain around
+- Sharp stops can flick the chain forward
 
-TODO:
+- Chain can be shortened / lengthened using Up/Down keys
 
-- Chain stretching / breaking at high speeds
-    - Consider reinforcing joints, joining every element to every other element
-    
-- Enemy velocities
-    - Enemies should move towards player
-    - Cannot constantly overwrite velocity with new target velocity, prevents collisions / knockbacks from playing out
-    - Velocity towards player should be fixed constant speed
-    - Add to velocities caused by collisions etc
-
-
-- Control scheme
-    - Mouse works but is quite clunky, tweak speeds/weights
-
-
-- Hit detection on player
+- Defeat enemys by hitting them with the ball or hitting them into walls
+- Survive as long as possible - depth travelled is final score
