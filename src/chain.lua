@@ -45,7 +45,8 @@ function chain.new(world)
 			
 			if (i == segments) then
 				link.shape = love.physics.newCircleShape(endlink_radius) --Ending link
-				link.body:setLinearDamping(0.25)
+				link.body:setMass(100000)
+				link.body:setLinearDamping(0.5)
 			else
 				link.shape = love.physics.newCircleShape(link_radius) 
 				link.body:setLinearDamping(0.25)
@@ -76,7 +77,7 @@ function chain.new(world)
 
 			x1,y1 = links[i-1].body:getPosition()
 			x2,y2 = links[i].body:getPosition()
-			links[i-1].join = love.physics.newRopeJoint(links[i-1].body, links[i].body, x1, y1 , x2, y2, 10, false )
+			links[i-1].join = love.physics.newRopeJoint(links[i-1].body, links[i].body, x1, y1 , x2, y2, link_distance, false )
 
 		end
 
@@ -99,8 +100,6 @@ function chain.new(world)
 				love.graphics.draw(link_sprites[link_sprite_index], x - link_radius,y - link_radius)
 			end
 		end		
-
-		love.graphics.print(#links, 100, 100)
 
 	end
 

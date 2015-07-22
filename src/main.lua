@@ -60,8 +60,6 @@ function love.update(dt)
 end
 
 
-
-
 end
 
 function love.keypressed(key, isrepeat)
@@ -96,16 +94,21 @@ function love.draw()
 	if(gameState.mainMenu) then
 		love.graphics.draw(mainMenu,0,0)
 	elseif(gameState.gameOver) then
+
 		love.graphics.draw(gameOver,0,0)
 		player.drawPlayer()
+		enemies.drawEnemies()
+		love.graphics.print("Final Depth: " .. player.getDepth() .. "m", 475,0)
+
+
 	else
 		love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
 		walls.drawWalls()
 		player.drawPlayer()
 		enemies.drawEnemies()
 		love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
-		love.graphics.print("Depth: " .. player.getDepth() .. "m", 500,0)
-		love.graphics.print("COLLISION WITH: " .. Collision, 750,200)
+		love.graphics.print("Depth: " .. player.getDepth() .. "m", 475,0)
+		--love.graphics.print("COLLISION WITH: " .. Collision, 450,15)
 	end
 
 end

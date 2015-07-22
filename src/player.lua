@@ -50,7 +50,6 @@ function player.new(world)
 		chain.drawChain()
 		x,y = body:getPosition() --Player Center
 		love.graphics.draw(sprites[life],x-16,y-16)
-		love.graphics.circle("line",x,y,16,10)
 	end
 
 	function self.updatePosition(x_update,y_update)
@@ -82,8 +81,8 @@ function player.new(world)
 
 	function self.playerHit()
 		if(life >= 1) then
-			--life = life - 1
-			--chain.setLinkSprite(life - 1)
+			life = life - 1
+			chain.setLinkSprite(life - 1)
 			--Flag for game over
 		end
 	end

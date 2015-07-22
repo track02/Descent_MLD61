@@ -10,19 +10,43 @@ function enemies.new(_world)
 	local toDelete = {}
 	local enemyRadius = 16
 
-	local liveSprites =  {
-						  love.graphics.newImage("Sprites/EnemyLow.png"),
-  						  love.graphics.newImage("Sprites/EnemyMed.png"),
-						  love.graphics.newImage("Sprites/EnemyFull.png"),
+	local liveSprites_set1 =  {
+						  love.graphics.newImage("Sprites/EnemyLow_1.png"),
+  						  love.graphics.newImage("Sprites/EnemyMed_1.png"),
+						  love.graphics.newImage("Sprites/EnemyFull_1.png"),
 						 }
+
+
+	local liveSprites_set2 = {
+ 						  love.graphics.newImage("Sprites/EnemyLow_2.png"),
+  						  love.graphics.newImage("Sprites/EnemyMed_2.png"),
+						  love.graphics.newImage("Sprites/EnemyFull_2.png"),
+							 }
+
+
+	local liveSprites_set3 = {
+ 						  love.graphics.newImage("Sprites/EnemyLow_3.png"),
+  						  love.graphics.newImage("Sprites/EnemyMed_3.png"),
+						  love.graphics.newImage("Sprites/EnemyFull_3.png"),
+						   }
+
+	local liveSprites_set4 = {
+ 						      love.graphics.newImage("Sprites/EnemyLow_4.png"),
+  						      love.graphics.newImage("Sprites/EnemyMed_4.png"),
+						      love.graphics.newImage("Sprites/EnemyFull_4.png"),
+							 }
+
+	local liveSprites = {liveSprites_set1, liveSprites_set2, liveSprites_set3,liveSprites_set4}
+
+
 	local deathSprites = {
-						  love.graphics.newImage("Sprites/enemyDeath1.png"),
-						  love.graphics.newImage("Sprites/enemyDeath2.png"),
-						  love.graphics.newImage("Sprites/enemyDeath3.png"),
-						  love.graphics.newImage("Sprites/enemyDeath4.png"),
-						  love.graphics.newImage("Sprites/enemyDeath5.png"),
-						  love.graphics.newImage("Sprites/enemyDeath6.png"),
-						  love.graphics.newImage("Sprites/enemyDeath7.png"),
+						  love.graphics.newImage("Sprites/EnemyDeath1.png"),
+						  love.graphics.newImage("Sprites/EnemyDeath2.png"),
+						  love.graphics.newImage("Sprites/EnemyDeath3.png"),
+						  love.graphics.newImage("Sprites/EnemyDeath4.png"),
+						  love.graphics.newImage("Sprites/EnemyDeath5.png"),
+						  love.graphics.newImage("Sprites/EnemyDeath6.png"),
+						  love.graphics.newImage("Sprites/EnemyDeath7.png"),
 						 }
 
 	local noDeathFrames = 7
@@ -33,7 +57,7 @@ function enemies.new(_world)
 		target.y = py
 
 		--Use depth as a difficulty multiplyer
-		if((pd / 2500) > maxEnemies) then
+		if((pd / 1500) > maxEnemies) then
 			maxEnemies = maxEnemies + 1
 		end
 
@@ -53,7 +77,8 @@ function enemies.new(_world)
 			enemy.health = 3
 			enemy.force = -1 * (math.random(900 + (pd/5), 1000 + (pd/5)))
 			enemy.deathFrame = 1
-			enemy.sprite = liveSprites[enemy.health]
+			enemy.spriteSet = math.random(1,4)
+			enemy.sprite = liveSprites[enemy.spriteSet][enemy.health]
 			table.insert(enemyList, enemy)
 
 		end
@@ -66,7 +91,7 @@ function enemies.new(_world)
 			x,y = enemyList[i].body:getPosition()
 			radius = enemyList[i].shape:getRadius()
 			love.graphics.draw(enemyList[i].sprite, x - radius, y - radius)
-			love.graphics.print("ID:"..enemyList[i].fixture:getUserData(), x + (i*10), y + (i*10))
+			--love.graphics.print("ID:"..enemyList[i].fixture:getUserData(), x + (i*10), y + (i*10))
 		end
 	end
 
@@ -130,9 +155,9 @@ function enemies.new(_world)
 				end
 
 				if(enemyList[i].health <= 0 or enemyList[i].health >= 3) then
-					enemyList[i].sprite = liveSprites[1]
+					enemyList[i].sprite = liveSprites[enemyList[i].spriteSet][1]
 				else
-					enemyList[i].sprite = liveSprites[enemyList[i].health]
+					enemyList[i].sprite = liveSprites[enemyList[i].spriteSet][enemyList[i].health]
 				end
 			end
 		end	
