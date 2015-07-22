@@ -25,17 +25,21 @@ function enemies.new(_world)
 						  love.graphics.newImage("Sprites/enemyDeath7.png"),
 						 }
 
-	local noDeathFrames = 14
+	local noDeathFrames = 7
 
-	function self.addEnemy(px, py, playerdepth)
+	function self.addEnemy(px, py, pd)
 
 		target.x = px
 		target.y = py
 
 		--Use depth as a difficulty multiplyer
-		multiplier = 0
+		if((pd / 2500) > maxEnemies) then
+			maxEnemies = maxEnemies + 1
+		end
 
-		if(#enemyList < maxEnemies and math.random() > 0.90) then
+
+
+		if(#enemyList < maxEnemies and math.random() > 0.99) then
 	
 			x1 = math.random(100, 900)
 			y1 = math.random(850, 900) --Spawn from bottom, offscreen
@@ -47,8 +51,8 @@ function enemies.new(_world)
 			enemy.fixture:setUserData("E"..x1 + y1) --Used to identify this enemy in collisions
 			enemy.body:setLinearDamping(0.1)
 			enemy.health = 3
-			enemy.force = -1 * (math.random(1750 + multiplier,2000 + multiplier))
-			enemy.deathFrames = noDeathFrames
+			enemy.force = -1 * (math.random(900 + (pd/5), 1000 + (pd/5)))
+			enemy.deathFrame = 1
 			enemy.sprite = liveSprites[enemy.health]
 			table.insert(enemyList, enemy)
 
@@ -61,14 +65,13 @@ function enemies.new(_world)
 		for i = 1, #enemyList, 1 do
 			x,y = enemyList[i].body:getPosition()
 			radius = enemyList[i].shape:getRadius()
-			love.graphics.draw(enemyList[i].sprite, x/2, y/2)
+			love.graphics.draw(enemyList[i].sprite, x - radius, y - radius)
+			love.graphics.print("ID:"..enemyList[i].fixture:getUserData(), x + (i*10), y + (i*10))
 		end
 	end
 
 
 	function self.updateEnemies()
-
-		self.cleanUp()
 
 		x2 = target.x
 		y2 = target.y
@@ -78,39 +81,43 @@ function enemies.new(_world)
 			if(enemyList[i].health <= 0) then
 
 				--If an enemy is dead, play death animation then clean up
-				enemyList[i].body:setType("kinematic") --Can't collide
-
 				--Set sprite 
-				enemy.sprite = deathSprites[math.random(1,7)]
-				enemyList[i].deathFrames = enemyList[i].deathFrames - 1
+				enemyList[i].sprite = deathSprites[enemyList[i].deathFrame]
+				enemyList[i].deathFrame = enemyList[i].deathFrame + 1
 
-				if(enemyList[i].deathFrames <= 0) then
-					table.insert(toDelete, enemyIndex)
+				if(enemyList[i].deathFrame >= noDeathFrames) then
+					table.insert(toDelete, i)
 				end
 			
-			else	
-
-				x1,y1 = enemyList[i].body:getPosition()
-
-				--Distance to player
-				xlength = (x1 - x2)
-				ylength = (y1 - y2)
-				r = math.sqrt((xlength * xlength) + (ylength * ylength))
-
-				xratio = (xlength / r)
-				yratio = (ylength / r)
-
-				enemyList[i].body:applyForce(xratio * enemyList[i].force, yratio * enemyList[i].force)
-
 			end
+
 		end
+
+		self.cleanUp()
+
+		for i = 1, #enemyList, 1 do
+
+			x1,y1 = enemyList[i].body:getPosition()
+
+			--Distance to player
+			xlength = (x1 - x2)
+			ylength = (y1 - y2)
+			r = math.sqrt((xlength * xlength) + (ylength * ylength))
+
+			xratio = (xlength / r)
+			yratio = (ylength / r)
+
+			enemyList[i].body:applyForce(xratio * enemyList[i].force, yratio * enemyList[i].force)
+			
+		end
+
+
 	end
 
 
 	function self.enemyHit(id, hitplayer)
 
-		enemyIndex = 0
-
+		
 		for i = 1, #enemyList, 1 do
 
 			if (id == enemyList[i].fixture:getUserData()) then
@@ -118,11 +125,14 @@ function enemies.new(_world)
 
 				if(hitplayer) then
 					enemyList[i].health = 0
-					enemyList[i].sprite = liveSprites[1]
 				else
 					enemyList[i].health = enemyList[i].health - 1
-					enemyList[i].sprite = liveSprites[enemyList[i].health]
+				end
 
+				if(enemyList[i].health <= 0 or enemyList[i].health >= 3) then
+					enemyList[i].sprite = liveSprites[1]
+				else
+					enemyList[i].sprite = liveSprites[enemyList[i].health]
 				end
 			end
 		end	
@@ -132,14 +142,14 @@ function enemies.new(_world)
 	function self.cleanUp()
 
 		for i = 1, #toDelete, 1 do
-			enemyList[i].body:destroy()
-			table.remove(enemyList, i)
+			enemyList[toDelete[i]].body:destroy()
+			table.remove(enemyList, toDelete[i])
+			toDelete[i] = nil
 		end
-
-		toDelete = {}
 	end
 
 	return self
+
 
 end
 

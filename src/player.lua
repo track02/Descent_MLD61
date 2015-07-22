@@ -5,7 +5,7 @@ local vo = require('vector_ops')
 function player.new(world)
 
 	local self = {}
-	local body = love.physics.newBody(world, 300, 100, "dynamic")
+	local body = love.physics.newBody(world, 550, 200, "dynamic")
 	local shape = love.physics.newCircleShape(16)
 	local fixture = love.physics.newFixture(body, shape)
 	local mass = 1000
@@ -18,9 +18,9 @@ function player.new(world)
 	local reinforce
 	local position = {x = 512, y = 600}
 	local velocity = {x = 0, y = 0}
-	local target = {x = 300, y = 100}
+	local target = {x = 512, y = 600}
 	local chain = ch.new(world)
-	local depth = 0
+	local depth = 1
 	local depth_speed = 1
 
 	local life = 5
@@ -31,7 +31,7 @@ function player.new(world)
 					  love.graphics.newImage("Sprites/Player_Injured_1.png"),
 					  love.graphics.newImage("Sprites/Player.png")}
 
-	chain.generateLinks(9, 300, 100)
+	chain.generateLinks(9, 550, 200)
 
 
 	function self.lengthenChain()
@@ -82,8 +82,8 @@ function player.new(world)
 
 	function self.playerHit()
 		if(life >= 1) then
-			life = life - 1
-			chain.setLinkSprite(life - 1)
+			--life = life - 1
+			--chain.setLinkSprite(life - 1)
 			--Flag for game over
 		end
 	end

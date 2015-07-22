@@ -16,7 +16,7 @@ function love.load()
 	gameState = {mainMenu = true, gameStart = false, gameOver = false}
 
 	love.window.setMode(1024,800, {vsync=true})
-	love.keyboard.setKeyRepeat(true)
+	love.keyboard.setKeyRepeat(false)
 	love.physics.setMeter(32) -- One meter is 32 px
 
 	world = love.physics.newWorld(0, 9.81*32, true) -- Horizontal gravity 0, Vertical gravity 9.81, allow bodies to sleep
@@ -30,6 +30,8 @@ function love.load()
 	mainMenu = love.graphics.newImage("Sprites/MainMenu.png")
 	gameOver = love.graphics.newImage("Sprites/GameOver.png")
 
+	Collision = ""
+
 end
 
 function love.update(dt)
@@ -37,7 +39,8 @@ function love.update(dt)
  if(gameState.gameStart) then
 
 	player.updatePosition()
-	enemies.addEnemy(player.getPosition(), 5)
+	px,py = player.getPosition()
+	enemies.addEnemy(px,py, player.getDepth())
 	enemies.updateEnemies()
 
 	--Important! -> break down update intervals into several small steps
@@ -102,6 +105,7 @@ function love.draw()
 		enemies.drawEnemies()
 		love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
 		love.graphics.print("Depth: " .. player.getDepth() .. "m", 500,0)
+		love.graphics.print("COLLISION WITH: " .. Collision, 750,200)
 	end
 
 end
@@ -112,13 +116,15 @@ end
 function beginContact(a, b, coll)
 
 	x,y = coll:getNormal()
-	textA = a:getBody():getLinearVelocity()
+	
 
 	-- _E_nemy colliding with _F_inal link chain
 	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "F" and math.abs(b:getBody():getLinearVelocity()) > 400) then
-		enemies.enemyHit(a:getUserData(),false)
+		--enemies.enemyHit(a:getUserData(),false)
+		--Collision = a:getUserData()
 	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "F" and math.abs(a:getBody():getLinearVelocity()) > 400) then
 		enemies.enemyHit(b:getUserData(), false)
+		Collision = b:getUserData()
 	end
  
  	--_E_nemy colliding with _W_all
@@ -130,11 +136,13 @@ function beginContact(a, b, coll)
 
 	-- _E_nemy colliding with _P_layer
 	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "P") then
-		player.playerHit()
-		enemies.enemyHit(a:getUserData(), true)
+		--player.playerHit()
+		--enemies.enemyHit(a:getUserData(), true)
+	--	Collision = a:getUserData()
 	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "P") then
 		enemies.enemyHit(b:getUserData(), true)
 		player.playerHit()
+		Collision = b:getUserData()
 	end
  
 
