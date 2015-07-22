@@ -1,12 +1,23 @@
 # Mini LD 61
 
-Originally started for a Mini Ludum Dare 60, will submit for MLD61 instead.
+Gameplay / Controls:
 
-- Move the player using the mouse
-- Move in circles to spin the chain around
-- Sharp stops can flick the chain forward
+- Descend downwards, repelling enemies as you go.
 
-- Chain can be shortened / lengthened using Up/Down keys
+- Aim of the game is to reach the greatest depth possible.
 
-- Defeat enemys by hitting them with the ball or hitting them into walls
-- Survive as long as possible - depth travelled is final score
+- Move using the mouse, the ship will automatically move towards your cursor.
+
+- Attack enemies by swinging the ball & chain
+     - Using circular mouse motions will cause the chain to spin
+
+- Only direct hits with the ball will damage enemies or hitting them into walls
+     - Need to hit them with some force 
+
+- The ship can withstand four hits, remaining hits are denoted by the colour of the ship & chain (Blue -> Green -> Yellow -> Red -> Game Over)
+
+- You can also shorten / lengthen the chain using the arrow keys
+     - Experimental feature, things can get strange if you do this too fast
+
+- Enemies can take three hits and will change colour in a similar fashion
+
