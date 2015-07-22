@@ -11,18 +11,18 @@ function chain.new(world)
 	local link_distance = 10
 	local endlink_radius = 15
 	
-	local link_sprites = { 
+	local link_sprites =   { 
 						   love.graphics.newImage("Sprites/Link_Low.png"),
 						   love.graphics.newImage("Sprites/Link_Med.png"),
 						   love.graphics.newImage("Sprites/Link_High.png"),
 						   love.graphics.newImage("Sprites/Link_Full.png")
-						 }
+						   }
 
 	local link_end_sprites = {
-								love.graphics.newImage("Sprites/Link_End_Low.png"),
-								love.graphics.newImage("Sprites/Link_End_Med.png"),	
-								love.graphics.newImage("Sprites/Link_End_High.png"),
-								love.graphics.newImage("Sprites/Link_End_Full.png")
+							love.graphics.newImage("Sprites/Link_End_Low.png"),
+							love.graphics.newImage("Sprites/Link_End_Med.png"),	
+							love.graphics.newImage("Sprites/Link_End_High.png"),
+							love.graphics.newImage("Sprites/Link_End_Full.png")
 							}
 
 	local link_sprite_index = 4
@@ -127,7 +127,7 @@ function chain.new(world)
 
 	function self.shortenChain()
 
-		if(#links > 3) then
+		if(#links > 5) then
 
 		x,y = links[1].body:getPosition();
 
@@ -147,8 +147,6 @@ function chain.new(world)
 		return links
 	end
 
-
-
 	function self.setLinkSprite(index)
 		
 		link_sprite_index = index
@@ -157,9 +155,7 @@ function chain.new(world)
 			link_sprite_index = 1
 		end
 		
-	end
-
-	
+	end	
 
 	return self
 

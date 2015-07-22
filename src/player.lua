@@ -16,10 +16,12 @@ function player.new(world)
 
 	local join
 	local reinforce
-	local position = {x = 300, y = 100}
+	local position = {x = 512, y = 600}
 	local velocity = {x = 0, y = 0}
 	local target = {x = 300, y = 100}
 	local chain = ch.new(world)
+	local depth = 0
+	local depth_speed = 1
 
 	local life = 5
 
@@ -53,6 +55,7 @@ function player.new(world)
 
 	function self.updatePosition(x_update,y_update)
 		body:setLinearVelocity(velocity.x, velocity.y)
+		depth = depth + depth_speed
 	end
 
 	function self.setTarget(x,y)
@@ -71,29 +74,26 @@ function player.new(world)
 		x1,y1 = body:getPosition()
 		x2,y2 = links[1].body:getPosition()
 		join = love.physics.newRevoluteJoint(body, links[1].body, x1, y1, x2, y2, false )
-		--join:setMaxMotorTorque(-5)
-		--join:setMotorEnabled(true)
 	end
 
 	function self.getPosition()
 		return body:getPosition()
 	end
 
-	function self.getJoinInfo()
-		--return join:getJointSpeed()
-	end
-
 	function self.playerHit()
-		if(life > 1) then
+		if(life >= 1) then
 			life = life - 1
 			chain.setLinkSprite(life - 1)
 			--Flag for game over
-
 		end
 	end
 
 	function self.playerLife()
 		return life
+	end
+
+	function self.getDepth()
+		return depth
 	end
 
 	self.linkToChain()

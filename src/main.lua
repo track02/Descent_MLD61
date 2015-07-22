@@ -12,30 +12,32 @@ function love.conf(t)
 end
 
 function love.load()
+
+	gameState = {mainMenu = true, gameStart = false, gameOver = false}
+
 	love.window.setMode(1024,800, {vsync=true})
 	love.keyboard.setKeyRepeat(true)
-
 	love.physics.setMeter(32) -- One meter is 32 px
 
 	world = love.physics.newWorld(0, 9.81*32, true) -- Horizontal gravity 0, Vertical gravity 9.81, allow bodies to sleep
 	world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
 	player = _player.new(world)
-
 	enemies = _enemyList.new(world)
-
 	walls = _walls.new(world)
 
-	love.graphics.setBackgroundColor(104,136,248)
-
-	textA = ""
-	textB = ""
+	love.graphics.setNewFont("Fonts/White Submarine.ttf", 15)
+	mainMenu = love.graphics.newImage("Sprites/MainMenu.png")
+	gameOver = love.graphics.newImage("Sprites/GameOver.png")
 
 end
 
 function love.update(dt)
+
+ if(gameState.gameStart) then
+
 	player.updatePosition()
-	enemies.addEnemy(player.getPosition())
+	enemies.addEnemy(player.getPosition(), 5)
 	enemies.updateEnemies()
 
 	--Important! -> break down update intervals into several small steps
@@ -44,6 +46,17 @@ function love.update(dt)
 	world:update(dt/3) 
 	world:update(dt/3)
 	world:update(dt/3)
+
+
+	if(player.playerLife() <= 1) then
+		gameState.gameStart = false
+		gameState.gameOver = true
+	end
+
+
+end
+
+
 
 
 end
@@ -58,11 +71,18 @@ function love.keypressed(key, isrepeat)
 		player.lengthenChain()
 	end
 
+	if(love.keyboard.isDown("return")) then
+
+		if(gameState.mainMenu) then
+			gameState.mainMenu = false
+			gameState.gameStart = true
+		elseif(gameState.gameOver) then
+			love.load()
+		end
+
+	end
 end
 
-function love.keyreleased(key)
-
-end
 
 function love.mousemoved(x,y,dx,dy)
 		player.setTarget(x,y)
@@ -70,14 +90,19 @@ end
 
 function love.draw()
 
-	love.graphics.setColor(220, 220, 220) -- set the drawing color to green for the ground
-	walls.drawWalls()
-	player.drawPlayer()
-	enemies.drawEnemies()
-
-	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
-	love.graphics.print(textA, 75,20)
-	love.graphics.print(textB, 75,30)
+	if(gameState.mainMenu) then
+		love.graphics.draw(mainMenu,0,0)
+	elseif(gameState.gameOver) then
+		love.graphics.draw(gameOver,0,0)
+		player.drawPlayer()
+	else
+		love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
+		walls.drawWalls()
+		player.drawPlayer()
+		enemies.drawEnemies()
+		love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
+		love.graphics.print("Depth: " .. player.getDepth() .. "m", 500,0)
+	end
 
 end
 
@@ -88,7 +113,6 @@ function beginContact(a, b, coll)
 
 	x,y = coll:getNormal()
 	textA = a:getBody():getLinearVelocity()
-	textB = b:getBody():getLinearVelocity()
 
 	-- _E_nemy colliding with _F_inal link chain
 	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "F" and math.abs(b:getBody():getLinearVelocity()) > 400) then
@@ -100,10 +124,8 @@ function beginContact(a, b, coll)
  	--_E_nemy colliding with _W_all
 	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "W" and math.abs(a:getBody():getLinearVelocity()) > 400) then
 		enemies.enemyHit(a:getUserData())
-		textA = " WALL HIT "
 	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "W" and math.abs(b:getBody():getLinearVelocity()) > 400) then
 		enemies.enemyHit(b:getUserData())
-		textB = " WALL HIT "
 	end
 
 	-- _E_nemy colliding with _P_layer
@@ -118,14 +140,11 @@ function beginContact(a, b, coll)
 
 end
  
-function endContact(a, b, coll)
- 
+function endContact(a, b, coll) 
 end
  
-function preSolve(a, b, coll)
- 
+function preSolve(a, b, coll) 
 end
  
 function postSolve(a, b, coll, normalimpulse1, tangentimpulse1, normalimpulse2, tangentimpulse2)
- 
 end
