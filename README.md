@@ -21,8 +21,8 @@ Gameplay / Controls:
 
 - Enemies can take three hits and will change colour in a similar fashion
 
-![SC1](https://github.com/track02/Descent_MLD61/tree/master/Screenshots/Gameplay1_SC.png "Screenshot1")
+![SC1](Gameplay1_SC.png "Screenshot1")
 
-![SC2](https://github.com/track02/Descent_MLD61/tree/master/Screenshots/Gameplay2_SC.png "Screenshot2")
+![SC2](Gameplay2_SC.png "Screenshot2")
 
-![SC3](https://github.com/track02/Descent_MLD61/tree/master/Screenshots/MainMenu_SC.png "Screenshot3")
+![SC3](MainMenu_SC.png "Screenshot3")
