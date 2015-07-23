@@ -20,6 +20,9 @@ Gameplay / Controls:
      - Experimental feature, things can get strange if you do this too fast
 
 - Enemies can take three hits and will change colour in a similar fashion
+- 
 ![SC1](https://github.com/track02/Descent_MLD61/tree/master/Screenshots/Gameplay1_SC.png "Screenshot1")
+
 ![SC2](https://github.com/track02/Descent_MLD61/tree/master/Screenshots/Gameplay2_SC.png "Screenshot2")
+
 ![SC3](https://github.com/track02/Descent_MLD61/tree/master/Screenshots/MainMenu_SC.png "Screenshot3")
