@@ -9,6 +9,8 @@ function enemies.new(_world)
 	local target = {x = 0 , y = 0}
 	local toDelete = {}
 	local enemyRadius = 16
+	local deathSfx = love.audio.newSource("Music/EnemyDestroyed.wav")
+
 
 	local liveSprites_set1 =  {
 						  love.graphics.newImage("Sprites/EnemyLow_1.png"),
@@ -105,6 +107,7 @@ function enemies.new(_world)
 
 			if(enemyList[i].health <= 0) then
 
+				deathSfx:play()
 				--If an enemy is dead, play death animation then clean up
 				--Set sprite 
 				enemyList[i].sprite = deathSprites[enemyList[i].deathFrame]

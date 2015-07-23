@@ -16,12 +16,16 @@ function player.new(world)
 
 	local join
 	local reinforce
-	local position = {x = 512, y = 600}
 	local velocity = {x = 0, y = 0}
 	local target = {x = 512, y = 600}
 	local chain = ch.new(world)
 	local depth = 1
 	local depth_speed = 1
+
+	local playerAudio = {
+							death = love.audio.newSource("Music/PlayerDestroyed.wav"),
+							hit = love.audio.newSource("Music/PlayerHit.wav"),
+						}
 
 	local life = 5
 
@@ -31,7 +35,8 @@ function player.new(world)
 					  love.graphics.newImage("Sprites/Player_Injured_1.png"),
 					  love.graphics.newImage("Sprites/Player.png")}
 
-	chain.generateLinks(9, 550, 200)
+
+	chain.generateLinks(12, 550, 200)
 
 
 	function self.lengthenChain()
@@ -47,9 +52,11 @@ function player.new(world)
 	end
 
 	function self.drawPlayer()
+		
 		chain.drawChain()
 		x,y = body:getPosition() --Player Center
 		love.graphics.draw(sprites[life],x-16,y-16)
+
 	end
 
 	function self.updatePosition(x_update,y_update)
@@ -80,10 +87,18 @@ function player.new(world)
 	end
 
 	function self.playerHit()
+
+		playerAudio.hit:play()
+
 		if(life >= 1) then
 			life = life - 1
 			chain.setLinkSprite(life - 1)
-			--Flag for game over
+
+			if(life < 1) then
+				playerAudio.death:play()
+			end
+
+
 		end
 	end
 

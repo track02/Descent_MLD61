@@ -27,6 +27,7 @@ function chain.new(world)
 
 	local link_sprite_index = 4
 
+	local lengthAudio = love.audio.newSource("Music/ChainShift.wav")
 
 
 	local target = {x = 0, y = 0}
@@ -105,6 +106,7 @@ function chain.new(world)
 
 	function self.lengthenChain()
 
+		lengthAudio:play()
 		newlink = {}
 		x,y = links[1].body:getPosition();
 
@@ -127,6 +129,8 @@ function chain.new(world)
 	function self.shortenChain()
 
 		if(#links > 5) then
+
+		lengthAudio:play()
 
 		x,y = links[1].body:getPosition();
 

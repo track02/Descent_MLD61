@@ -2,6 +2,7 @@ local _chain = require('chain')
 local _player = require('player')
 local _enemyList = require('enemy_manager')
 local _walls = require('walls')
+local _audio = require('audio')
 
 function love.conf(t)
 
@@ -25,6 +26,7 @@ function love.load()
 	player = _player.new(world)
 	enemies = _enemyList.new(world)
 	walls = _walls.new(world)
+	audio = _audio.new()
 
 	love.graphics.setNewFont("Fonts/White Submarine.ttf", 15)
 	mainMenu = love.graphics.newImage("Sprites/MainMenu.png")
@@ -32,6 +34,15 @@ function love.load()
 
 	Collision = ""
 
+	bubble_ps = love.graphics.newParticleSystem(love.graphics.newImage("Sprites/BubbleParticle.png"), 12)
+	bubble_ps:setParticleLifetime(2,3)
+	bubble_ps:setLinearAcceleration(-10, 10, -30, -50 )
+	bubble_ps:setSpread(2)
+
+	hit_ps = love.graphics.newParticleSystem(love.graphics.newImage("Sprites/SparkParticle.png"), 12)
+	hit_ps:setParticleLifetime(0.1,0.1)
+	hit_ps:setLinearAcceleration(-500, 500, 500, -500)
+	hit_ps:setSpread(2)
 end
 
 function love.update(dt)
@@ -50,12 +61,14 @@ function love.update(dt)
 	world:update(dt/3)
 	world:update(dt/3)
 
-
 	if(player.playerLife() <= 1) then
 		gameState.gameStart = false
 		gameState.gameOver = true
 	end
 
+
+	bubble_ps:update(dt)
+	hit_ps:update(dt)
 
 end
 
@@ -75,18 +88,38 @@ function love.keypressed(key, isrepeat)
 	if(love.keyboard.isDown("return")) then
 
 		if(gameState.mainMenu) then
+			audio.playBGM()
 			gameState.mainMenu = false
 			gameState.gameStart = true
 		elseif(gameState.gameOver) then
 			love.load()
+			audio.stopBGM()
 		end
-
 	end
+
+	if(love.keyboard.isDown("m")) then
+		audio.stopBGM()
+	end
+
+	if(love.keyboard.isDown("n")) then
+		audio.resumeBGM();
+	end
+
+
+
 end
 
 
 function love.mousemoved(x,y,dx,dy)
+		
 		player.setTarget(x,y)
+
+		if(bubble_ps:getCount() == 0) then
+			bubble_ps:setPosition(player.getPosition())
+			bubble_ps:emit(math.random(1,12))
+		end
+
+ 
 end
 
 function love.draw()
@@ -94,20 +127,20 @@ function love.draw()
 	if(gameState.mainMenu) then
 		love.graphics.draw(mainMenu,0,0)
 	elseif(gameState.gameOver) then
-
 		love.graphics.draw(gameOver,0,0)
 		player.drawPlayer()
 		enemies.drawEnemies()
 		love.graphics.print("Final Depth: " .. player.getDepth() .. "m", 475,0)
-
-
 	else
-		love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
 		walls.drawWalls()
+		love.graphics.draw(hit_ps,0,0)
+		love.graphics.draw(bubble_ps,0,0)		
 		player.drawPlayer()
 		enemies.drawEnemies()
-		love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
 		love.graphics.print("Depth: " .. player.getDepth() .. "m", 475,0)
+
+
+
 		--love.graphics.print("COLLISION WITH: " .. Collision, 450,15)
 	end
 
@@ -118,36 +151,67 @@ end
 --coll is contact object
 function beginContact(a, b, coll)
 
-	x,y = coll:getNormal()
+
+ 	local function playCollision(id)
+		audio.playCollision(id)
+		hit_ps:setPosition(x1,y1)
+		hit_ps:emit(math.random(1,12))
+ 	end
+
+	x1,y1,x2,y2 = coll:getPositions()
 	
 
-	-- _E_nemy colliding with _F_inal link chain
-	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "F" and math.abs(b:getBody():getLinearVelocity()) > 400) then
-		--enemies.enemyHit(a:getUserData(),false)
-		--Collision = a:getUserData()
-	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "F" and math.abs(a:getBody():getLinearVelocity()) > 400) then
-		enemies.enemyHit(b:getUserData(), false)
-		Collision = b:getUserData()
+	if(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "F") then
+
+		if (math.abs(a:getBody():getLinearVelocity()) > 400) then
+			enemies.enemyHit(b:getUserData(), false)
+			Collision = b:getUserData()
+			audio.playCollision(1)
+		else
+			audio.playCollision(2)
+		end
+
+		hit_ps:setPosition(x1,y1)
+		hit_ps:emit(math.random(1,12))
 	end
  
  	--_E_nemy colliding with _W_all
-	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "W" and math.abs(a:getBody():getLinearVelocity()) > 400) then
-		enemies.enemyHit(a:getUserData())
-	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "W" and math.abs(b:getBody():getLinearVelocity()) > 400) then
-		enemies.enemyHit(b:getUserData())
+	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "W") then
+		
+		if(math.abs(a:getBody():getLinearVelocity()) > 400) then
+			enemies.enemyHit(a:getUserData())
+		end
+
+		playCollision(3)
+
+	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "W") then
+		
+		if(math.abs(b:getBody():getLinearVelocity()) > 400) then
+			enemies.enemyHit(b:getUserData())
+		end		
+		playCollision(3)
 	end
 
-	-- _E_nemy colliding with _P_layer
-	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "P") then
-		--player.playerHit()
-		--enemies.enemyHit(a:getUserData(), true)
-	--	Collision = a:getUserData()
-	elseif(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "P") then
+	--_E_nemy colliding with _P_layer
+	if(b:getUserData():sub(1,1) == "E" and a:getUserData():sub(1,1) == "P") then
 		enemies.enemyHit(b:getUserData(), true)
 		player.playerHit()
 		Collision = b:getUserData()
+		hit_ps:setPosition(x1,y1)
+		hit_ps:emit(math.random(1,12))
 	end
- 
+
+	--_F_inal link colliding with _W_all
+	if(a:getUserData():sub(1,1) == "F" and b:getUserData():sub(1,1) == "W") then		
+		playCollision(1)
+	elseif(b:getUserData():sub(1,1) == "F" and a:getUserData():sub(1,1) == "W") then		
+		playCollision(1)
+	end
+
+	--_E_nemey hits another _Enemy
+	if(a:getUserData():sub(1,1) == "E" and b:getUserData():sub(1,1) == "E") then
+		playCollision(1)
+ 	end
 
 end
  
