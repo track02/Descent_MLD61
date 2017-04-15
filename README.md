@@ -1,6 +1,6 @@
 # Mini LD 61
 
-Gameplay / Controls:
+## Gameplay / Controls:
 
 - Descend downwards, repelling enemies as you go.
 
